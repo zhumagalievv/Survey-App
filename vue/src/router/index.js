@@ -3,7 +3,7 @@ import Dashboard from "../views/Dashboard.vue";
 import Login from "../views/auth/Login.vue";
 import Register from "../views/auth/Register.vue";
 import Authentication from "../views/auth/Authentication.vue";
-import DefaultLayout from "../components/DefaultLayout.vue";
+import DefaultLayout from "../views/DefaultLayout.vue";
 import Survey from "../views/survey/Survey.vue";
 import {next} from "lodash/seq";
 import store from "../store";
@@ -25,7 +25,7 @@ const routes = [
       },
       {
         path: '/survey',
-        name: 'Survey',
+        name: 'survey',
         component: Survey
       },
     ]
