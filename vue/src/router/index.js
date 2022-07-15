@@ -5,7 +5,7 @@ import Register from "../views/auth/Register.vue";
 import Authentication from "../views/auth/Authentication.vue";
 import DefaultLayout from "../views/DefaultLayout.vue";
 import Survey from "../views/survey/Survey.vue";
-import {next} from "lodash/seq";
+import SurveyView from "../views/survey/SurveyView.vue";
 import store from "../store";
 
 const routes = [
@@ -26,7 +26,17 @@ const routes = [
       {
         path: '/survey',
         name: 'survey',
-        component: Survey
+        component: Survey,
+      },
+      {
+        path: '/survey/create-survey',
+        name: 'createSurvey',
+        component: SurveyView
+      },
+      {
+        path: '/survey/:id',
+        name: 'surveyView',
+        component: SurveyView
       },
     ]
   },

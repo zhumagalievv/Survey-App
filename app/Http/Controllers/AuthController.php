@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rules\Password;
+use phpDocumentor\Reflection\Utils;
 
 class AuthController extends Controller
 {
@@ -15,6 +17,7 @@ class AuthController extends Controller
             'email' => 'required|email|string|unique:users,email',
             'password' => [
                 'required',
+                'confirmed',
                 Password::min(8)->mixedCase()->numbers()->symbols()
             ]
         ]);
@@ -30,6 +33,39 @@ class AuthController extends Controller
         return response([
             'user' => $user,
             'token' => $token
+        ]);
+    }
+
+    public function login(Request $request)
+    {
+        $credentials = $request->validate([
+            'email' => 'required|email|string|exists:users,email',
+            'password' => [
+                'required'
+            ],
+            'remember' => 'boolean'
+        ]);
+        $remember = $credentials['remember'] ?? false;
+        unset($credentials['remember']);
+
+        if (!Auth::attempt($credentials, $remember)) {
+            return response([
+                'error' => 'The Provided credentials are not correct'
+            ], 422);
+        }
+        $user = Auth::user();
+        return response([
+            'user' => $user,
+            'token' => $user->createToken('main')->plainTextToken
+        ]);
+    }
+
+    public function logout()
+    {
+        $user = Auth::user();
+        $user->currentAccessToken()->delete();
+        return response([
+            'success' => true
         ]);
     }
 }

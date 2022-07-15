@@ -21,7 +21,7 @@
       <div>
         <label for="email-address" class="sr-only">Email address</label>
         <input v-model="user.email" id="email-address" name="email" type="email" autocomplete="email" required
-               class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+               class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                placeholder="Email Address">
       </div>
       <div>
@@ -32,9 +32,9 @@
                placeholder="Password">
       </div>
       <div>
-        <label for="confirm_password" class="sr-only">Confirm Password</label>
-        <input v-model="user.confirm_password" id="confirm_password" name="confirmed" type="password"
-               autocomplete="confirm_password" required
+        <label for="password" class="sr-only">Confirm Password</label>
+        <input v-model="user.password_confirmation" id="password" name="password_confirmation" type="password"
+               autocomplete="password_confirmation" required
                class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                placeholder="Confirm Password">
       </div>
@@ -67,13 +67,13 @@ const user = {
   name: '',
   email: '',
   password: '',
-  confirm_password: '',
+  password_confirmation: '',
 };
 
 function register(event) {
   event.preventDefault();
   store.dispatch('register', user).then((res) => {
-    router.push({name: 'login'})
+    router.push({name: 'dashboard'})
   })
 }
 
