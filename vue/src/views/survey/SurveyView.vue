@@ -68,7 +68,8 @@
               <label for="desciprtion" class="block text-sm font-medium text-gray-700">
                 Description
               </label>
-              <textarea name="description" id="desciprtion" v-model="model.description" autocomplete="survey_description"
+              <textarea name="description" id="desciprtion" v-model="model.description"
+                        autocomplete="survey_description"
                         placeholder="Describe your survey"
                         class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mt-1 block w-full sm:text-sm border border-gray-300 rounded-md"
                         rows="3"></textarea>
@@ -97,7 +98,32 @@
                 Save
               </button>
             </div>
-
+          </div>
+          <div class="px-4 py-3 bg-gray-50 text-right sm:px-6">
+            <h3 class="text-2xl font-semibold flex items-center justify-between">
+              Questions
+              <button type="button"
+                      @click="addQuestion()"
+                      class="flex items-center text-sm py-1 px-4 rounded-sm text-white bg-gray-600 hover:bg-gray-700">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24"
+                     stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
+                </svg>
+                Add Question
+              </button>
+            </h3>
+            <div v-if="!model.questions.length" class="text-center text-gray-600">
+              You don't have any questions created
+            </div>
+            <div v-for="(question, index) in model.questions" :key="question.id" class="mt-6 py-4">
+              <QuestionEditor
+                :question="question"
+                :index="index"
+                @change="questionChange"
+                @addQuestion="addQuestion"
+                @deleteQuestion="deleteQuestion"
+              />
+            </div>
           </div>
         </div>
       </form>
@@ -110,6 +136,8 @@ import PageComponent from "../../components/PageComponent.vue";
 import {ref} from 'vue';
 import {useRouter} from "vue-router";
 import store from '../../store';
+import QuestionEditor from '../../components/editor/QuestionEditor.vue'
+import {v4 as uuid4} from 'uuid'
 
 const route = useRouter()
 const model = ref({
@@ -130,5 +158,28 @@ if (route.currentRoute.value.params.id) {
   })
 }
 
+function addQuestion(index) {
+  const newQuestion = {
+    id: uuid4(),
+    text: '',
+    description: null,
+    question: '',
+    data: {}
+  }
+  model.value.questions.splice(index, 0, newQuestion)
+}
+
+function deleteQuestion(question) {
+  model.value.questions = model.value.questions.filter((q) => q !== question)
+}
+
+function questionChange(question) {
+  model.value.questions = model.value.questions.map((q) => {
+    if (q.id === question.id) {
+      return JSON.parse(JSON.stringify(question))
+    }
+    return q
+  })
+}
 </script>
 

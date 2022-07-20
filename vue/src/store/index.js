@@ -10,7 +10,8 @@ export default store = createStore({
       data: {},
       token: sessionStorage.getItem('TOKEN'),
     },
-    surveys: [{
+    surveys: [
+      {
         id: 1,
         title: 'Title',
         slug: 'slug-slug-slug',
@@ -200,7 +201,8 @@ export default store = createStore({
           }
         ]
       }
-    ]
+    ],
+    questionTypes: ['text', 'select', 'radio', 'checkbox', 'textarea']
   },
   getters: {},
   mutations: {
