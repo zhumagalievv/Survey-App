@@ -16,7 +16,7 @@
                 Image
               </label>
               <div class="mt-1 flex items-center">
-                <img v-if="model.image" :src="model.image" :alt="model.title" class="w-64 h-48 object-cover">
+                <img v-if="model.image_url" :src="model.image_url" :alt="model.title" class="w-64 h-48 object-cover">
                 <span v-else
                       class="flex items-center justify-center h-12 w-12 rounded-full overflow-hidden bg-gray-100">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-[80%] w-[80%] text-gray-300" fill="none"
@@ -49,7 +49,7 @@
                       focus:ring-indigo-500
                 "
                 >
-                  <input type="file" class="absolute top-0 left-0 bottom-0 right-0 opacity-0">
+                  <input type="file" class="absolute top-0 left-0 bottom-0 right-0 opacity-0" @change="onImageChange">
                   Change
                 </button>
               </div>
@@ -139,6 +139,7 @@ import store from '../../store';
 import QuestionEditor from '../../components/editor/QuestionEditor.vue'
 import {v4 as uuid4} from 'uuid'
 
+const router = useRouter();
 const route = useRouter()
 const model = ref({
   id: '',
@@ -163,6 +164,7 @@ function addQuestion(index) {
     id: uuid4(),
     text: '',
     description: null,
+    image_url: '',
     question: '',
     data: {}
   }
@@ -180,6 +182,25 @@ function questionChange(question) {
     }
     return q
   })
+}
+
+function saveSurvey() {
+  store.dispatch('saveSurvey', model.value).then(({data}) => {
+    router.push({
+      name: 'surveyView',
+      params: {id: data.data.id}
+    })
+  })
+}
+
+function onImageChange(event) {
+  const file = event.target.files[0]
+  const reader = new FileReader();
+  reader.onload = () => {
+    model.value.image = reader.result
+    model.value.image_url = reader.result
+  }
+  reader.readAsDataURL(file)
 }
 </script>
 

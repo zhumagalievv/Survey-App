@@ -22,37 +22,37 @@ export default store = createStore({
         updated_at: '2021-12-20 18:00:00',
         expire_date: '2021-12-20 18:00:00',
         questions: [{
-            id: 1,
-            type: 'select',
-            question: 'Question Title',
-            description: 'Description here',
-            data: [{
-                uuid: '123e4567-e89b-12d3-a456-426614174000',
-                text: 'answer1'
-              },
-              {
-                uuid: '123e4567-e89b-12d3-a456-426614174002',
-                text: 'answer2'
-              },
-              {
-                uuid: '123e4567-e89b-12d3-a456-426614174003',
-                text: 'answer2'
-              },
-              {
-                uuid: '123e4567-e89b-12d3-a456-426614174004',
-                text: 'answer2'
-              },
-            ]
+          id: 1,
+          type: 'select',
+          question: 'Question Title',
+          description: 'Description here',
+          data: [{
+            uuid: '123e4567-e89b-12d3-a456-426614174000',
+            text: 'answer1'
           },
+            {
+              uuid: '123e4567-e89b-12d3-a456-426614174002',
+              text: 'answer2'
+            },
+            {
+              uuid: '123e4567-e89b-12d3-a456-426614174003',
+              text: 'answer2'
+            },
+            {
+              uuid: '123e4567-e89b-12d3-a456-426614174004',
+              text: 'answer2'
+            },
+          ]
+        },
           {
             id: 2,
             type: 'radio',
             question: 'Question Title',
             description: 'Description here',
             data: [{
-                uuid: '123e4567-e89b-12d3-a456-426614174000',
-                text: 'answer1'
-              },
+              uuid: '123e4567-e89b-12d3-a456-426614174000',
+              text: 'answer1'
+            },
               {
                 uuid: '123e4567-e89b-12d3-a456-426614174002',
                 text: 'answer2'
@@ -73,9 +73,9 @@ export default store = createStore({
             question: 'Question Title',
             description: 'Description here',
             data: [{
-                uuid: '123e4567-e89b-12d3-a456-426614174000',
-                text: 'answer1'
-              },
+              uuid: '123e4567-e89b-12d3-a456-426614174000',
+              text: 'answer1'
+            },
               {
                 uuid: '123e4567-e89b-12d3-a456-426614174002',
                 text: 'answer2'
@@ -117,37 +117,37 @@ export default store = createStore({
         updated_at: '2021-12-20 18:00:00',
         expire_date: '2021-12-20 18:00:00',
         questions: [{
-            id: 16,
-            type: 'select',
-            question: 'Question Title',
-            description: 'Description here',
-            data: [{
-                uuid: '123e4567-e89b-12d3-a456-426614174000',
-                text: 'answer1'
-              },
-              {
-                uuid: '123e4567-e89b-12d3-a456-426614174002',
-                text: 'answer2'
-              },
-              {
-                uuid: '123e4567-e89b-12d3-a456-426614174003',
-                text: 'answer2'
-              },
-              {
-                uuid: '123e4567-e89b-12d3-a456-426614174004',
-                text: 'answer2'
-              },
-            ]
+          id: 16,
+          type: 'select',
+          question: 'Question Title',
+          description: 'Description here',
+          data: [{
+            uuid: '123e4567-e89b-12d3-a456-426614174000',
+            text: 'answer1'
           },
+            {
+              uuid: '123e4567-e89b-12d3-a456-426614174002',
+              text: 'answer2'
+            },
+            {
+              uuid: '123e4567-e89b-12d3-a456-426614174003',
+              text: 'answer2'
+            },
+            {
+              uuid: '123e4567-e89b-12d3-a456-426614174004',
+              text: 'answer2'
+            },
+          ]
+        },
           {
             id: 25,
             type: 'radio',
             question: 'Question Title',
             description: 'Description here',
             data: [{
-                uuid: '123e4567-e89b-12d3-a456-426614174000',
-                text: 'answer1'
-              },
+              uuid: '123e4567-e89b-12d3-a456-426614174000',
+              text: 'answer1'
+            },
               {
                 uuid: '123e4567-e89b-12d3-a456-426614174002',
                 text: 'answer2'
@@ -168,9 +168,9 @@ export default store = createStore({
             question: 'Question Title',
             description: 'Description here',
             data: [{
-                uuid: '123e4567-e89b-12d3-a456-426614174000',
-                text: 'answer1'
-              },
+              uuid: '123e4567-e89b-12d3-a456-426614174000',
+              text: 'answer1'
+            },
               {
                 uuid: '123e4567-e89b-12d3-a456-426614174002',
                 text: 'answer2'
@@ -206,6 +206,17 @@ export default store = createStore({
   },
   getters: {},
   mutations: {
+    saveSurvey: (state, survey) => {
+      state.surveys = [...state.surveys, survey.data]
+    },
+    updateSurvey: (state, survey) => {
+      state.surveys = state.surveys.map((s) => {
+        if (s.id === survey.data.id) {
+          return survey.data
+        }
+        return s
+      })
+    },
     logout: state => {
       state.user.data = {}
       state.user.token = null
@@ -218,22 +229,41 @@ export default store = createStore({
     }
   },
   actions: {
+    saveSurvey({commit}, survey) {
+      delete survey.image_url
+      let response;
+      if (survey.id) {
+        response = axiosClient.put(`/survey/${survey.id}`, survey).then((res) => {
+          commit("updateSurvey", res.data)
+          return res
+        })
+      } else {
+        response = axiosClient.post('/survey', survey).then((res) => {
+          commit("saveSurvey", survey)
+          return res
+        })
+      }
+      return response
+    },
     register({
-      commit
-    }, user) {
+               commit
+             }, user) {
       return axiosClient.post('/register', user).then(({
-        data
-      }) => {
+                                                         data
+                                                       }) => {
         commit('setUser', data);
         return data;
       })
     },
     login({commit}, user) {
-      return axiosClient.post('/login', user).then(({data}) => {commit('setUser', data); return data;})
+      return axiosClient.post('/login', user).then(({data}) => {
+        commit('setUser', data);
+        return data;
+      })
     },
     logout({
-      commit
-    }) {
+             commit
+           }) {
       return axiosClient.post('/logout')
         .then(response => {
           commit('logout')
